@@ -1,5 +1,10 @@
 -- encoding
 
+--元の設定
+-- vim.bo.buftype = "nofile"
+-- vim.o.compatible = false
+
+-- Set buftype to "nofile"
 
  vim.g.vsnip_snippet_dir = vim.fn.stdpath("config") .. "/snippets/"
 
@@ -16,23 +21,51 @@ vim.opt.ignorecase = true
 vim.opt.swapfile = false --スワップファイルを生成しない
 vim.opt.wrap = true --端までコードが届いた際に折り返す
 vim.opt.winblend = 5 --フロートウィンドウなどを若干透明に
+vim.opt.cursorline = true --カーソル
 
 vim.opt.ambiwidth = "single"
 -- vim.cmd('autocmd FileType * startinsert')
+--
 
 --改行でオートインデント
 vim.opt.autoindent = true
 
 vim.api.nvim_set_option('clipboard', 'unnamedplus')
 
+      -- Neovim initialization file
+vim.g.nightflyCursorColor = true
+
+
+-- local buf = vim.api.nvim_create_buf(false, true)
+-- vim.api.nvim_buf_set_option(buf, 'buftype', '')
+-- vim.api.nvim_buf_set_option(buf, 'buftype', 'nofile')
+
+
 vim.opt.hlsearch = true
 
 vim.cmd('set background=dark')
 
+--カーソルカラー
+
+-- カーソルのフォアグラウンド色とバックグラウンド色を設定します
+vim.cmd('hi Cursor guifg=#FF0000 guibg=#FF0000')
+
+-- カラースキームを変更する場合、カーソルの色も変わる可能性があるため、変更後に再度カーソルの色を設定する必要があります
+-- vim.cmd('colorscheme gruvbox')
+-- vim.cmd('hi Cursor guifg=#00FF00 guibg=#00FF00')
+vim.cmd [[
+  autocmd ColorScheme * highlight Cursor guifg=#333333 guibg=#33300
+]]
+
 -- edit next
 -- vim.keymap.set({ 'n', 's','i','v' }, '<c-w>', '<ESC>wviwo<C-g>',opts)
 -- vim.keymap.set({ 'n', 's','i','v' }, '<c-w>', '<ESC>viwo<C-g>',opts)
+-- 選択
 vim.keymap.set({ 'n'}, '<c-h>', '<ESC>viwo<C-g>',opts)
+vim.keymap.set({ 'n'}, '<s-h>', '<ESC>viwo<C-g>',opts)
+
+
+
 -- vim.keymap.set({ 'n', 's','i','v' }, '<c-b>', '<ESC>bbviwo<C-g>',opts)
 -- map prefix
 vim.g.mapleader = ' '
@@ -59,13 +92,13 @@ vim.keymap.set("i", "<C-a>", '<ESC>ggVG', opts)
 vim.keymap.set("v", "<C-a>", '<ESC>ggVG', opts)
 
 vim.keymap.set("n", "<C-i>", 'i})', opts)
+vim.keymap.set("i", "<C-i>", '})', opts)
 
 vim.keymap.set('n', 'j', 'gj', {noremap = true})
 vim.keymap.set('n', 'k', 'gk', {noremap = true})
 --"「H」「L」で行頭・行末に移動する
 
 vim.keymap.set('n', '<S-h>', '^', {noremap = true})
-vim.keymap.set('n', '<S-l>', '$', {noremap = true})
 vim.keymap.set('n', '<S-l>', '$', {noremap = true})
 
 vim.keymap.set("i", "<C-b>", '<Left>', opts)
@@ -86,9 +119,14 @@ vim.keymap.set('n', '<C-]>', '<Esc><Right>', {noremap = true})
 vim.keymap.set("n", "<C-p>", ':bprev<CR>', opts)
 vim.keymap.set("n", "<C-n>", ':bnext<CR>', opts)
 
+-- vim.keymap.set("n", "<C-S>", "<Esc>:set buftype=<cr><Esc>:update<cr>", { noremap = true })
+-- vim.keymap.set("i", "<C-S>", "<Esc>:set buftype=<cr><Esc>:update<cr>", { noremap = true })
+-- vim.keymap.set("v", "<C-S>", "<Esc>:set buftype=<cr><Esc>:update<cr>", { noremap = true })
+-- 
 vim.keymap.set("n", "<C-S>", "<Esc>:update<cr>", { noremap = true })
 vim.keymap.set("i", "<C-S>", "<Esc>:update<cr>", { noremap = true })
 vim.keymap.set("v", "<C-S>", "<Esc>:update<cr>", { noremap = true })
+
 -- vim.keymap.set('n', '<C-s>', '<ESC>:w<CR>',)
 
 --ファイルパス表示 path
@@ -97,7 +135,11 @@ vim.keymap.set('n', '<Leader>cp', ':let @*=expand("%:p")<CR>:echo expand("%:p")<
 vim.keymap.set("n", ";p", ':BufferPin<CR>', opts)
 
 --" ESCキー２度押しでハイライトを消す
-vim.keymap.set('n', '<ESC><ESC>', ':nohlsearch<CR>', {silent=true})
+-- vim.keymap.set('n', '<ESC><ESC>', ':nohlsearch<CR>', {silent=true})
+--" ESCキー２度押しでハイライトを消すウィンドウも閉じる
+-- vim.keymap.set('n', '<ESC>', ':nohlsearch<CR>:only<CR>', {silent=true})
+vim.keymap.set('n', '<ESC>', ':nohlsearch<CR>', {silent=true})
+
 vim.keymap.set('n', '<C-l>', ':nohlsearch<CR>', {silent=true})
 --  "githubをブラウザで開く"
 vim.keymap.set('n', 'go', ':GBrowse<CR>', {silent=true})
@@ -108,7 +150,10 @@ vim.keymap.set({ 'n' }, 'K', "<cmd>Lspsaga hover_doc<CR>")
 vim.keymap.set({ 'n' }, 'T', "<cmd>Lspsaga term_toggle<CR>")
 vim.keymap.set({ 'n' }, '<Plug>(ff)r', "<cmd>Lspsaga rename<CR>")
 
--- vim.keymap.set({ 'n' }, '<Plug>(ff)f', vim.lsp.buf.format)
+-- vim.keymap.set({ 'n' }, '<Plug>(ff)f', vim.lsp.buf.fmt = require("tailwindcss-colorizer-cmp").formatter}
+-- rmat)
+
+vim.keymap.set('n', '<C-c>', '<C-w>o', opts)
 
 vim.keymap.set('n', ',f', '<C-u><Cmd>Lspsaga lsp_finder<CR>', opts)
 -- vim.keymap.set('i', ',k', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -148,20 +193,22 @@ vim.keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<CR>", {})
 vim.keymap.set("n", "<leader>u", "<cmd>UndotreeToggle<CR>", {})
 
 -- previous / next node that matches query
-vim.keymap.set({ "n", "s", "i" }, "<C-u>", function()
-    select_ease.select_node({ queries = queries, direction = "previous" })
-end, {})
-vim.keymap.set({ "n", "s", "i" }, "<C-d>", function()
-    select_ease.select_node({ queries = queries, direction = "next" })
-    -- select_ease.select_node({ queries = queries,current_line_only = true, direction = "next" })
-end, {})
+-- vim.keymap.set({ "n", "s", "i" }, "<C-u>", function()
+    -- select_ease.select_node({ queries = queries, direction = "previous" })
+-- end, {})
+-- vim.keymap.set({ "n", "s", "i" }, "<C-d>", function()
+    -- select_ease.select_node({ queries = queries, direction = "next" })
+-- end, {})
 
+--neo-tree
+  vim.keymap.set({ 'n' }, '<Leader>n', '<Cmd>NeoTreeFocusToggle<CR>')
+  vim.keymap.set({ 'n' }, '<Leader>m', '<Cmd>MarkdownPreview<CR>')
 
--- fern.vim
-  vim.keymap.set({ 'n' }, '<Leader>n', '<Cmd>Fern . -drawer -reveal=% -toggle -width=35<CR>')
-
-vim.keymap.set('n', '<leader>r', ':RunCode<CR><CR>', { noremap = true, silent = false })
-vim.keymap.set('n', '<leader>q', '<C-w><C-w>:only<CR>', { noremap = true, silent = false })
+-- vim.keymap.set('n', '<leader>r', ':RunCode<CR><CR>', { noremap = true, silent = false })
+vim.keymap.set('n', '<leader>r', ':set buftype=<CR>:RunCode<CR><CR>', { noremap = true, silent = false })
+-- vim.keymap.set('n', '<leader>q', '<C-w><C-w>:only<CR>', { noremap = true, silent = false })
+vim.keymap.set('n', '<leader>q', ':only<CR>', { noremap = true, silent = false })
+vim.keymap.set('n', '<leader>w', '<C-w>o', { noremap = true, silent = false })
 
 vim.keymap.set("n", "<leader>b", ':Bracey<CR>', opts)
 vim.keymap.set("n", "<leader>t", ':<C-u>TagbarToggle<CR>', opts)
@@ -171,7 +218,6 @@ vim.keymap.set("n", "<C-k>", '<Plug>(edgemotion-k)', opts)
 vim.keymap.set("n", "s", '<Plug>(easymotion-overwin-f2)', opts)
 
 vim.keymap.set("n", "<leader>xx", ':BufOnly<CR>:BufOnly<CR>', opts)
-vim.keymap.set("n", "<C-/>", '<Plug>(caw:hatpos:toggle)', opts)
 --"git"
 vim.keymap.set("n", "<leader>ga", ':Git add %:p<CR><CR>', opts)
 vim.keymap.set("n", "<leader>gc", ':Git commit<CR><CR>', opts)
@@ -192,6 +238,14 @@ vim.keymap.set('n', '<Leader>tk', '<cmd>:ChatGPT<cr>')
 vim.keymap.set('n', '<Leader>tj', '<cmd>:ChatGPTActAs<cr>')
 vim.keymap.set('n', '<Leader>tt', '<cmd>:ChatGPTEditWithInstructions<cr>')
 
+-- c-/でコメント
+-- vim.keymap.set("n", "<C-_>", function() require('Comment.api').toggle.linewise.current() end, { noremap = true, silent = true })
+
+vim.keymap.set({ "n", "s", "i" }, "<C-_>", "<esc>:lua require('Comment.api').toggle.linewise.current()<cr>", { noremap = true, silent = true })
+
+vim.keymap.set({ "n", "s", "i" }, "<c-/>", "<esc>:lua require('Comment.api').toggle.linewise.current()<cr>", { noremap = true, silent = true })
+
+
 -- 新しいファイルを保存するときに、ディレクトリが存在しなければ、
 -- ユーザーに確認を取ってから新しくディレクトリを作る
 vim.cmd([[
@@ -205,6 +259,8 @@ vim.cmd([[
     autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
   augroup END
 ]])
+
+
 
 
 -- 保存時にprettierを実行
@@ -221,137 +277,39 @@ autocmd!
   autocmd BufWritePre *.py Black
   autocmd BufWritePost *.go GoFmt
   autocmd BufWritePre *.rs RustFmt
-  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
+  autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.svelte,*.yaml,*.html,*.vue :Prettier
 augroup END
 ]])
 
--- prettierの設定
+-- vueのファイルタイプをhtmlに
+
+-- vim.cmd([[
+-- augroup FileTypeHTML
+--   autocmd!
+--   autocmd BufNewFile,BufRead *.{html,htm,vue*} set filetype=html
+-- augroup END
+-- ]])
+-- 
+-- -- prettierの設定
 vim.g['prettier#config#single_quote'] ='true'
 vim.g['prettier#config#semi'] ='true'
 vim.g['prettier#config#trailingComma'] ='all'
-
---let g:fern#renderer = 'nerdfont'
-vim.g['fern#renderer'] = 'nerdfont'
-vim.g['bookmark_auto_close'] = 1
-vim.g['tagalong_verbose'] = 1
-vim.g['auto_ctags'] = 1
-vim.g['bracey_auto_start_browser'] = 1
--- vim.g['sandwich_no_default_key_mappings'] = 1
--- vim.g['operator_sandwich_no_default_key_mappings'] = 1
-vim.g['EasyMotion_do_mapping'] = 0
-vim.g['EasyMotion_smartcase'] = 1
-vim.g['vim_json_syntax_conceal'] = 0
-vim.g['user_emmet_expandabbr_key'] = '<Tab>'
-
-vim.g['tcomment#filetype#guess_javascriptreact '] = 1
-vim.g['tcomment#filetype#guess_typescriptreact '] = 1
-vim.g['tcomment#filetype#guess_javascript'] = 1
-vim.g['tcomment#filetype#guess_typescript '] = 1
-vim.g['tcomment#filetype#guess_php '] = 1
-
-vim.g['rustfmt_autosave'] = 1
-vim.g['rustfmt_command'] = '$HOME/.cargo/bin/rustfmt'
-
-
--- vim.keymap.set('n', '<Leader>c', "<cmd>lua require('ts_context_commentstring.internal').update_commentstring()<cr>", {noremap = true})
-
--- vim.cmd('autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact')
--- vim.cmd('autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact')
--- vim.cmd('autocmd BufNewFile,BufRead *.ts set filetype=typescript')
--- vim.cmd('autocmd BufNewFile,BufRead *.js set filetype=js')
-
 
 --行末にセミコロン追加
 vim.api.nvim_set_keymap('n', ';;', [[:normal A;<cr>]], {noremap = true})
 --行末にコロン追加
 --vim.api.nvim_set_keymap('n', '::', [[:normal A:<cr>]], {noremap = true})
 --行末にカンマ追加
-vim.api.nvim_set_keymap('n', ',,', [[:normal A,<cr>]], {noremap = true})
+--vim.api.nvim_set_keymap('n', ',,', [[:normal A,<cr>]], {noremap = true})
 
 vim.opt.list = true
 vim.opt.listchars:append "space:⋅"
 vim.opt.listchars:append "eol:↴"
 
-
--- 対応する括弧のハイライト
--- vim.cmd "highlight MatchParen  guifg='#ffd5ac' ctermfg=155 cterm=underline"
---vim.cmd "highlight MatchParen  guifg='#feacff' guibg='#00283d' ctermfg=155 cterm=underline"
-vim.cmd "highlight MatchParen  guifg='#ffd5ac' guibg='#5e81ac' "
-vim.cmd "hi comment guifg='lightblue'"
-vim.cmd "hi NormalFloat guifg='lightblue'"
--- vim.cmd "hi normal guibg=#00283d"
-
-vim.cmd "hi Visual term=reverse cterm=reverse guibg=Grey"
-
--- vim.cmd "hi BufferCurrent guifg='#efefef' guibg='#00283d'"
--- vim.cmd "hi BufferCurrentSign guibg='#00283d' guifg='#efefef' gui='bold'"
-vim.cmd "highlight QuickScopePrimary guifg='#ffd5ac' gui=underline ctermfg=155 cterm=underline"
-vim.cmd "highlight QuickScopeSecondary guifg='#feacff' gui=underline ctermfg=81 cterm=underline"
-
-vim.api.nvim_command([[
-    augroup ChangeBackgroudColour
-        " autocmd colorscheme * :hi normal guibg=#00283d
-    augroup END
-]])
-vim.o.termguicolors = true
-vim.cmd [[silent! colorscheme snow]]
---
-vim.api.nvim_set_hl(0, 'LspNormal', {bg='#00283d', fg='#5E81AC'})
-vim.api.nvim_set_hl(0, 'LspBorder', {bg='#00283d', fg='#5E81AC'})
-
-vim.api.nvim_set_hl(0, 'CallHierarchyNormal', {bg='#00283d', fg='#5E81AC'})
-vim.api.nvim_set_hl(0, 'CallHierarchyBorder', {bg='#00283d', fg='#5E81AC'})
-
-vim.api.nvim_set_hl(0, 'DefinitionBorder', {bg='#00283d', fg='#5E81AC'})
-vim.api.nvim_set_hl(0, 'DefinitionNormal', {bg='#00283d', fg='#5E81AC'})
-
-vim.api.nvim_set_hl(0, 'DiagnosticBorder', {bg='#00283d', fg='#5E81AC'})
-vim.api.nvim_set_hl(0, 'DiagnosticNormal', {bg='#00283d', fg='#5E81AC'})
-
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#f5cbcb'})
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#ffc200'})
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#FEBA4F'})
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#FFC0CB'})
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#ffd700'})
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#fdb86d'})
-vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#fccc97'})
-
-vim.api.nvim_set_hl(0, 'NormalFloat', { fg='#5E81AC'})
- vim.api.nvim_set_hl(0, 'FloatBorder', { fg='#5E81AC'})
-vim.api.nvim_set_hl(0, 'TelescopeBorder', {fg='#5e81ac'})
-
-vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#00283d'})
-vim.api.nvim_set_hl(0, 'BufferCurrentSign', {fg='#efefef', bg='#00283d'})
- 
-vim.api.nvim_set_hl(0, 'LspReferenceRead', {fg='#efefef', bg='#00283d'})
-vim.api.nvim_set_hl(0, 'LspReferenceText', {fg='#efefef', bg='#00283d'})
-vim.api.nvim_set_hl(0, 'LspReferenceWrite', {fg='#efefef', bg='#00283d'})
-
--- copilot icon color
-vim.api.nvim_set_hl(0, 'CmpItemKindCopilot', { fg='#fccc97'})
-vim.api.nvim_set_hl(0, 'CmpItemKindCopilot', { fg='#fff3bf'})
--- vim.api.nvim_set_hl(0, 'CmpItemKindCopilot', { fg='lightblue'})
---test メニューの色
-vim.api.nvim_set_hl(0, 'Pmenu', {fg='#cccccc', bg='#00283d'})
-vim.api.nvim_set_hl(0, 'PmenuSel', {fg='#cccccc', bg='#5E81AC'})
---
---color
-  vim.cmd [[
-    " Light theme: Compatible with Pmenu (#fff3bf)
-
-  ]]
-
---keymap
-vim.g.copilot_no_tab_map = true
-vim.api.nvim_set_keymap("i", "<C-k>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
-
-
-
-
 -- load lazy.nvim
 require('lazy_nvim')
 
---プラグインの設定あと設定する。
+--あと設定する。
 
 --'autocmd Comment * highlight Normal ctermbg=none guibg=none'
 -- telescope.nvim
@@ -395,6 +353,9 @@ require('telescope').setup({
 
 })
 
+-- require('telescope').load_extension('fzf')
+-- require("telescope").load_extension ("file_browser")
+
 local lspconfig = require('lspconfig')
 local configs = require('lspconfig/configs')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -403,7 +364,7 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true
 lspconfig.emmet_ls.setup({
     -- on_attach = on_attach,
     capabilities = capabilities,
-    filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less' },
+    filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less','vue' },
     init_options = {
       html = {
         options = {
@@ -437,25 +398,28 @@ null_ls.setup({
 mason_lspconfig.setup({
   ensure_installed = {
     'tsserver',
-    'eslint',
+    -- 'eslint',
     'gopls',
     'intelephense',
     'pyright',
     'rust_analyzer',
+    -- 'volar',
+    'tailwindcss',
   },
   automatic_installation = true,
 })
+require'lspconfig'.tailwindcss.setup{}
 
-mason_lspconfig.setup_handlers({
-  function(server_name)
-    local opts = {
-      capabilities = require('cmp_nvim_lsp').default_capabilities(),
-    }
-
-    lsp_config[server_name].setup(opts)
-  end,
-})
-
+-- mason_lspconfig.setup_handlers({
+--   function(server_name)
+--     local opts = {
+--       capabilities = require('cmp_nvim_lsp').default_capabilities(),
+--     }
+--
+--     lsp_config[server_name].setup(opts)
+--   end,
+-- })
+--
 
   -- Diagnostics signs and highlights
 --   Error:   ✘
@@ -577,81 +541,16 @@ cmp.setup({
   formatting = {
     fields = { 'abbr', 'kind', 'menu' },
     format = lspkind.cmp_format({
+    -- before = require('tailwindcss-colorizer-cmp').formatter,
       mode = 'symbol',
+      -- mode = 'text_symbol',
     }),
+      -- format = require("tailwindcss-colorizer-cmp").formatter,
   },
 })
 
 
 local select_ease = require("SelectEase")
-
--- For more language support check the `Queries` section
-local lua_query = [[
-    ;; query
-    ((identifier) @cap)
-    ("string_content" @cap)
-    ((true) @cap)
-    ((false) @cap)
-]]
-local python_query = [[
-    ;; query
-    ((identifier) @cap)
-    ((string) @cap)
-]]
-
-local php_query = [[
-    ;; query
-    ((string_value) @cap)
-    ((integer) @cap)
-]]
-
-local tsx_query = [[
-;; query
-   ((identifier) @cap)
-   ((string_fragment) @cap)
-   ((property_identifier) @cap)
-   ((number) @cap)
-]]
-
-local js_query = [[
-;; query
-   ((string_fragment) @cap)
-]]
-
-local html_query = [[
-;; query
-   ((tag_name) @cap)
-   ((text) @cap)
-   ((attribute_value) @cap)
-]]
-
-local json_query = [[
-;; query
-   ((string_content) @cap)
-]]
-
-local go_query = [[
-;; query
-((selector_expression) @cap) ; Method call
-((field_identifier) @cap) ; Method names in interface
-
-; Identifiers
-((identifier) @cap)
-((expression_list) @cap) ; pseudo Identifier
-((int_literal) @cap)
-((interpreted_string_literal) @cap)
-
-; Types
-((type_identifier) @cap)
-((pointer_type) @cap)
-((slice_type) @cap)
-
-; Keywords
-((true) @cap)
-((false) @cap)
-((nil) @cap)
-]]
-
 
 local queries = {
     lua = lua_query,
@@ -703,11 +602,13 @@ require('nvim-treesitter.configs').setup({
     "javascript",
     "go",
     "python",
-    "markdown_inline",
-    "markdown",
+     "markdown_inline",
+     "markdown",
     "query",
     "yaml",
-    "http"
+    "http",
+    "php",
+    "vue"
   },
   highlight = {
     enable = true,
@@ -722,14 +623,10 @@ require('nvim-treesitter.configs').setup({
     config = {
       css = '// %s',
       php = { __default = '// %s', __multiline = '/* %s */' },
+      -- vue = { __default = '// %s', __multiline = '/* %s */' },
+      --
+      --
       javascript = {
-        __default = '// %s',
-        jsx_element = '{/* %s */}',
-        jsx_fragment = '{/* %s */}',
-        jsx_attribute = '// %s',
-        comment = '// %s'
-      },
-      typescript = {
         __default = '// %s',
         jsx_element = '{/* %s */}',
         jsx_fragment = '{/* %s */}',
@@ -739,100 +636,38 @@ require('nvim-treesitter.configs').setup({
     }
   },
 })
+
+
+
+
+
+  --   require("lspsaga").setup({})
+-- require("lspsaga").setup({
 --
-local status, saga = pcall(require, "lspsaga")
-if (not status) then return end
-saga.setup {
+--   show_outline = {
+--     win_width = 50,
+--     -- auto_preview = false,
+--   },
+-- })
+--
+--
 
-  diagnostic = {
-    on_insert = false,
-    on_insert_follow = false,
-    insert_winblend = 0,
-    show_code_action = true,
-    show_source = true,
-    jump_num_shortcut = true,
-    --1 is max
-    max_width = 0.7,
-    custom_fix = nil,
-    custom_msg = nil,
-    text_hl_follow = false,
-    border_follow = true,
-    keys = {
-      exec_action = "o",
-      quit = "q",
-      go_action = "g"
-    },
-  },
-
-
-  code_action = {
-    num_shortcut = true,
-    show_server_name = false,
-    extend_gitsigns = true,
-    keys = {
-      -- string | table type
-      quit = "q",
-      exec = "<CR>",
-    },
-  },
-
-  lightbulb = {
-    enable = false,
-    enable_in_insert = true,
-    sign = true,
-    sign_priority = 40,
-    virtual_text = true,
-  }, 
-
-  symbol_in_winbar = {
-    enable = true,
-    separator = " ",
-    ignore_patterns={},
-    hide_keyword = true,
-    show_file = true,
-    folder_level = 2,
-    respect_root = false,
-    color_mode = true,
-  },
-
-  ui = {
-    -- This option only works in Neovim 0.9
-    title = false,
-    -- Border type can be single, double, rounded, solid, shadow.
-    border = "single",
-    winblend = 0,
-    expand = "",
-    collapse = "",
-    code_action = "💡",
-    incoming = " ",
-    outgoing = " ",
-    hover = ' ',
-    kind = {},
-  },
-
-  -- rename_action_keys = {
-  --   quit = "<C-c>",
-  --   exec = "<CR>",
-  --    confirm = "<C-a>",
-  -- },
-
-  rename = {
-    quit = "<C-c>",
-    exec = "<C-a>",
-    mark = "x",
-    confirm = "<C-a>",
-    in_select = false,
-  },
-
-
-}
-
+    require('lualine').setup({
+      options = {
+        globalstatus = true,
+                  theme = "nightfly"
+      }
+    })
 vim.g.barbar_auto_setup = false -- disable auto-setup
     require'barbar'.setup (
     {
       icons = {
     pinned = {button = '車', filename = true, separator = {right = ''}},
-      }
+      },
+insert_at_start = false,
+  insert_at_end = true,
+    animation = true,p
+
     }
     )
 
@@ -905,6 +740,132 @@ require("copilot").setup({
  panel = { enabled = false },
 })
 
+
+-- color
+vim.cmd.colorscheme('nightfly')
+
+-- 対応する括弧のハイライト
+-- vim.cmd "highlight MatchParen  guifg='#ffd5ac' ctermfg=155 cterm=underline"
+--vim.cmd "highlight MatchParen  guifg='#feacff' guibg='#00283d' ctermfg=155 cterm=underline"
+vim.cmd "highlight MatchParen  guifg='#ffd5ac' guibg='#5e81ac' "
+vim.cmd "hi comment guifg='lightblue'"
+vim.cmd "hi NormalFloat guifg='lightblue'"
+-- vim.cmd "hi normal guibg=#00283d"
+
+vim.cmd "hi Visual term=reverse cterm=reverse guibg=Grey"
+
+-- vim.cmd "hi BufferCurrent guifg='#efefef' guibg='#00283d'"
+-- vim.cmd "hi BufferCurrentSign guibg='#00283d' guifg='#efefef' gui='bold'"
+vim.cmd "highlight QuickScopePrimary guifg='#ffd5ac' gui=underline ctermfg=155 cterm=underline"
+vim.cmd "highlight QuickScopeSecondary guifg='#feacff' gui=underline ctermfg=81 cterm=underline"
+
+vim.api.nvim_command([[
+    augroup ChangeBackgroudColour
+        " autocmd colorscheme * :hi normal guibg=#00283d
+    augroup END
+]])
+
+vim.api.nvim_set_hl(0, "Function", { fg = "#82aaff", bold = true })
+
+vim.cmd [[silent! colorscheme snow]]
+--
+vim.api.nvim_set_hl(0, 'LspNormal', {bg='#00283d', fg='#5E81AC'})
+vim.api.nvim_set_hl(0, 'LspBorder', {bg='#00283d', fg='#5E81AC'})
+
+vim.api.nvim_set_hl(0, 'CallHierarchyNormal', {bg='#00283d', fg='#5E81AC'})
+vim.api.nvim_set_hl(0, 'CallHierarchyBorder', {bg='#00283d', fg='#5E81AC'})
+
+vim.api.nvim_set_hl(0, 'DefinitionBorder', {bg='#00283d', fg='#5E81AC'})
+vim.api.nvim_set_hl(0, 'DefinitionNormal', {bg='#00283d', fg='#5E81AC'})
+
+vim.api.nvim_set_hl(0, 'DiagnosticBorder', {bg='#00283d', fg='#5E81AC'})
+vim.api.nvim_set_hl(0, 'DiagnosticNormal', {bg='#00283d', fg='#5E81AC'})
+
+
+vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#f5cbcb'})
+vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#ffc200'})
+vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#FEBA4F'})
+vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#FFC0CB'})
+vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#ffd700'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#fdb86d'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#fccc97'})
+
+-- vim.api.nvim_set_hl(0, 'DiagnosticWarn', {bg='#00283d', fg='#fccc97'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticInfo', {bg='#00283d', fg='#fccc97'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticHint', {bg='#00283d', fg='#fccc97'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticOk', {bg='#00283d', fg='#fccc97'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticVirtualTextError', {bg='#00283d', fg='#fccc97'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticVirtualTextWarn', {bg='#00283d', fg='#fccc97'})
+
+-- vim.api.nvim_set_hl(0, 'DiagnosticFloatingError', {bg='#00283d', fg='#ffc0cb'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticFloatingWarn', {bg='#00283d', fg='#fccc97'})
+-- vim.api.nvim_set_hl(0, 'DiagnosticUnderlineError', {bg='#00283d', fg='#fccc97'})
+
+vim.api.nvim_set_hl(0, 'DiagnosticSignError', {bg='#00283d', fg='#ffc200'})
+vim.api.nvim_set_hl(0, 'DiagnosticError', {bg='#00283d', fg='#ffc200'})
+
+vim.api.nvim_set_hl(0, 'NormalFloat', { fg='#5E81AC'})
+ vim.api.nvim_set_hl(0, 'FloatBorder', { fg='#5E81AC'})
+vim.api.nvim_set_hl(0, 'TelescopeBorder', {fg='#5e81ac'})
+
+-- vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#00283d'})
+
+--選択バッファ
+vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#364D69'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#5e81ac'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#2260B0'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#03417F'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#00283D'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrentTarget', {fg='#efefef', bg='#5e81ac',})
+-- vim.api.nvim_set_hl(0, 'BufferCurrentIndex', {fg='#efefef', bg='#5e81ac'})
+
+
+-- vim.api.nvim_set_hl(0, 'BufferCurrent', {fg='#efefef', bg='#364D69'})
+vim.api.nvim_set_hl(0, 'BufferCurrentTarget', {fg='#efefef', bg='#364D69',})
+vim.api.nvim_set_hl(0, 'BufferCurrentIndex', {fg='#efefef', bg='#364D69'})
+
+vim.api.nvim_set_hl(0, 'BufferCurrentMod', {fg='#efefef', bg='#364D69'})
+vim.api.nvim_set_hl(0, 'BufferCurrentSign', {fg='#efefef', bg='#364D69'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrentMod', {fg='#efefef', bg='#5e81ac'})
+-- vim.api.nvim_set_hl(0, 'BufferCurrentSign', {fg='#efefef', bg='#5e81ac'})
+ 
+vim.api.nvim_set_hl(0, 'LspReferenceRead', {fg='#efefef', bg='#00283d'})
+vim.api.nvim_set_hl(0, 'LspReferenceText', {fg='#efefef', bg='#00283d'})
+vim.api.nvim_set_hl(0, 'LspReferenceWrite', {fg='#efefef', bg='#00283d'})
+
+-- copilot icon color
+vim.api.nvim_set_hl(0, 'CmpItemKindCopilot', { fg='#fccc97'})
+vim.api.nvim_set_hl(0, 'CmpItemKindCopilot', { fg='#fff3bf'})
+-- vim.api.nvim_set_hl(0, 'CmpItemKindCopilot', { fg='lightblue'})
+--test メニューの色
+vim.api.nvim_set_hl(0, 'Pmenu', {fg='#cccccc', bg='#00283d'})
+vim.api.nvim_set_hl(0, 'PmenuSel', {fg='#cccccc', bg='#5E81AC'})
+
+--
+--color
+  vim.cmd [[
+    " Light theme: Compatible with Pmenu (#fff3bf)
+
+  ]]
+
+--keymap
+vim.g.copilot_no_tab_map = true
+-- vim.api.nvim_set_keymap("i", "<C-k>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
+vim.api.nvim_set_keymap("i", "<C-k>", 'copilot#Accept("<CR>")', { silent = true, expr = true, script = true, replace_keycodes = false })
+
+
+require("neo-tree").setup({
+        close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
+  popup_border_style = "rounded",
+  enable_git_status = true,
+  enable_diagnostics = true,
+  
+  window = {
+    position = "left",
+    width = 30,
+  },
+})
+
 --next
 
 require('code_runner').setup({
@@ -925,12 +886,39 @@ mode ='term',
     php = "php",
     go = "go run",
     typescript = "deno run",
+    typescriptreact = "deno run",
     rust = "cd $dir && rustc $fileName && $dir/$fileNameWithoutExt"
   },
 })
 
 
+require("chatgpt").setup(
+{
+
+popup_input = {
+    prompt = "  ",
+    border = {
+      highlight = "FloatBorder",
+      style = "rounded",
+      text = {
+        top_align = "center",
+        top = " Prompt ",
+      },
+    },
+    win_options = {
+      winhighlight = "Normal:Normal,FloatBorder:FloatBorder",
+    },
+    submit = "<C-a>",
+  },
+
+}
+)
+
+
+require('git').setup()
+
 local diagnostic = require("lspsaga.diagnostic")
+
 
 -- code action
 local codeaction = require("lspsaga.codeaction")
@@ -941,5 +929,129 @@ vim.keymap.set("v", "<leader>ca", function()
 end, { silent = true })
 
 
--- color
-vim.cmd.colorscheme('nightfly')
+-- vim.keymap.set('n', '<Leader>c', "<cmd>lua require('ts_context_commentstring.internal').update_commentstring()<cr>", {noremap = true})
+vim.g['bookmark_auto_close'] = 1
+vim.g['tagalong_verbose'] = 1
+vim.g['auto_ctags'] = 1
+vim.g['bracey_auto_start_browser'] = 1
+-- vim.g['sandwich_no_default_key_mappings'] = 1
+-- vim.g['operator_sandwich_no_default_key_mappings'] = 1
+vim.g['EasyMotion_do_mapping'] = 0
+vim.g['EasyMotion_smartcase'] = 1
+vim.g['vim_json_syntax_conceal'] = 0
+
+vim.g['tcomment#filetype#guess_javascriptreact '] = 1
+vim.g['tcomment#filetype#guess_typescriptreact '] = 1
+vim.g['tcomment#filetype#guess_javascript'] = 1
+vim.g['tcomment#filetype#guess_typescript '] = 1
+vim.g['tcomment#filetype#guess_php '] = 1
+
+vim.g['rustfmt_autosave'] = 1
+vim.g['rustfmt_command'] = '$HOME/.cargo/bin/rustfmt'
+
+-- vim.cmd('autocmd BufNewFile,BufRead *.tsx set filetype=typescriptreact')
+-- vim.cmd('autocmd BufNewFile,BufRead *.jsx set filetype=javascriptreact')
+-- vim.cmd('autocmd BufNewFile,BufRead *.ts set filetype=typescript')
+-- vim.cmd('autocmd BufNewFile,BufRead *.js set filetype=js')
+
+vim.api.nvim_set_keymap("n", "<C-t>", ":AI<CR> ", { noremap = true })
+vim.api.nvim_set_keymap("v", "<C-t>", ":AI<CR> ", { noremap = true })
+vim.api.nvim_set_keymap("i", "<C-t>", "<Esc>:AI<CR>b", { noremap = true })
+
+vim.keymap.set('n', '<Leader>ai', ':AI:<CR>', {noremap = true})
+
+--すべて選択
+vim.keymap.set("n", "<C-a>", '<ESC>ggVG', opts)
+vim.keymap.set("i", "<C-a>", '<ESC>ggVG', opts)
+vim.keymap.set("v", "<C-a>", '<ESC>ggVG', opts)
+
+--ai-vim
+-- vim.api.nvim_set_keymap('n', '<leader>a', ':AI<CR>', { noremap =
+-- true, silent = true })
+ -- vim.api.nvim_set_keymap('x', '<leader>a', ':AI<CR>', { noremap =
+-- true, silent = true })
+
+        require("neoai").setup({
+            -- Options go here
+    -- Below are the default options, feel free to override what you would like changed
+    ui = {
+        output_popup_text = "NeoAI",
+        input_popup_text = "Prompt",
+        width = 30,      -- As percentage eg. 30%
+        output_popup_height = 80, -- As percentage eg. 80%
+    },
+    models = {
+        {
+            name = "openai",
+            -- model = "gpt-3.5-turbo"
+            model = "gpt-4"
+        },
+    },
+    register_output = {
+        ["g"] = function(output)
+            return output
+        end,
+        ["c"] = require("neoai.utils").extract_code_snippets,
+    },
+    inject = {
+        cutoff_width = 75,
+    },
+    prompts = {
+        context_prompt = function(context)
+            return "Hey, I'd like to provide some context for future "
+                .. "messages. Here is the code/text that I want to refer "
+                .. "to in our upcoming conversations:\n\n"
+                .. context
+        end,
+    },
+    open_api_key_env = "OPENAI_API_KEY",
+    shortcuts = {
+        {
+            name = "textify",
+            key = "<leader>as",
+            desc = "日本語で返信してください",
+            use_context = false,
+            prompt = function ()
+                return [[
+                    Using the following git diff generate a consise and
+                    clear git commit message, with a short title summary
+                    that is 75 characters or less:
+                ]] 
+            end,
+            modes = { "n" },
+            strip_function = nil,
+        },
+        {
+            name = "gitcommit",
+            key = "<leader>ag",
+            desc = "generate git commit message",
+            use_context = false,
+            prompt = function ()
+                return [[
+                    Using the following git diff generate a consise and
+                    clear git commit message, with a short title summary
+                    that is 75 characters or less:
+                ]] .. vim.fn.system("git diff --cached")
+            end,
+            modes = { "n" },
+            strip_function = nil,
+        },
+    },
+
+
+          
+        })
+
+
+--require'lspconfig'.volar.setup{
+ -- filetypes = {'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json'}
+--}
+
+require('nvim-highlight-colors').setup {
+  enable_tailwind = true,
+}
+
+require('Comment').setup {
+pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+}
+
